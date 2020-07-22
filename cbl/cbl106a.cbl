@@ -80,7 +80,7 @@
                10  FILLER      PIC X(14) VALUE 'USA Presidents'.
                10  FILLER      PIC X(38) VALUE SPACES.
                10  FILLER      PIC X(10) VALUE 'PAGE NUM'.
-               10  H1-PAGE-NUM PIC 999.
+               10  H1-PAGE-NUM PIC ZZ9.
       *----------------------------------------------------------*
            05  HEADING-LINE-2.
                10  FILLER         PIC X(05) VALUE 'Year '.
