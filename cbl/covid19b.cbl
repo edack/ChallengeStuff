@@ -32,7 +32,7 @@
                    15  UHR-DAY        PIC X(02).
                    15  FILLER         PIC X(01)  VALUE '/'.
                    15  UHR-YEAR       PIC X(04).
-               10  FILLER             PIC X(02)  VALUE SPACE.
+               10  UHR-STATE          PIC X(02)  VALUE SPACE.
                10  UHR-CASE-POSITIVE  PIC Z,ZZZ,ZZ9.
                10  FILLER             PIC X(02)  VALUE SPACE.
                10  UHR-CASE-NEGATIVE  PIC Z,ZZZ,ZZ9.
@@ -43,12 +43,12 @@
                10  UHR-HOSPITAL-TOT   PIC Z,ZZZ,ZZ9.
                10  UHR-ICU-TOT        PIC Z,ZZZ,ZZ9.
                10  UHR-VENT-TOT       PIC Z,ZZZ,ZZ9.
-               10  UHR-RECOVERED      PIC Z,ZZZ,ZZ9.
-               10  UHR-DEATH          PIC Z,ZZZ,ZZ9.
+               10  UHR-RECOVERED      PIC ZZ,ZZZ,ZZ9.
+               10  UHR-DEATH          PIC ZZ,ZZZ,ZZ9.
                10  UHR-DEATH-NEW      PIC Z,ZZZ,ZZ9.
                10  FILLER             PIC X(02)  VALUE SPACE.
                10  UHR-PERCENT        PIC Z9.9999.
-               10  FILLER             PIC X(04)  VALUE '%   '.
+               10  FILLER             PIC X(01)  VALUE '%'.
       *---------------------------------------------------------------*
            05  HEADING-LINE-1.
                10 HL1-DATE.
@@ -70,9 +70,9 @@
                10  FILLER    PIC X(12) VALUE '  AS OF     '.
                10  FILLER    PIC X(20) VALUE '  POSITIVE  NEGATIVE'.
                10  FILLER    PIC X(20) VALUE '    PEND     NEW +  '.
-               10  FILLER    PIC X(20) VALUE 'HOSPITAL    ICU     '.
-               10  FILLER    PIC X(20) VALUE 'VENT              TO'.
-               10  FILLER    PIC X(20) VALUE 'TAL     NEW         '.
+               10  FILLER    PIC X(20) VALUE 'HOSPITAL   ICU      '.
+               10  FILLER    PIC X(20) VALUE 'VENT                '.
+               10  FILLER    PIC X(20) VALUE 'TOTAL     NEW       '.
                10  FILLER    PIC X(10) VALUE '         '.
       *---------------------------------------------------------------*
            05  HEADING-LINE-3.
@@ -80,18 +80,18 @@
                10  FILLER    PIC X(20) VALUE '   TESTS      TESTS '.
                10  FILLER    PIC X(20) VALUE '   TESTS     TESTS  '.
                10  FILLER    PIC X(20) VALUE ' ADMITS   ADMITS    '.
-               10  FILLER    PIC X(20) VALUE 'ADMIT  RECOVER   DEA'.
-               10  FILLER    PIC X(20) VALUE 'THS   DEATHS   PERCE'.
-               10  FILLER    PIC X(10) VALUE 'NT        '.
+               10  FILLER    PIC X(20) VALUE 'ADMIT  RECOVER     D'.
+               10  FILLER    PIC X(20) VALUE 'EATHS    DEATHS  PER'.
+               10  FILLER    PIC X(10) VALUE 'CENT      '.
       *---------------------------------------------------------------*
            05  HEADING-LINE-4.
                10  FILLER    PIC X(12) VALUE '  ----      '.
-               10  FILLER    PIC X(20) VALUE '  -------    -------'.
-               10  FILLER    PIC X(20) VALUE '--  -----    -----  '.
+               10  FILLER    PIC X(20) VALUE '  -------  ---------'.
+               10  FILLER    PIC X(20) VALUE '  -----    -----  '.
                10  FILLER    PIC X(20) VALUE ' ------   ------    '.
-               10  FILLER    PIC X(20) VALUE '-----  -------   ---'.
-               10  FILLER    PIC X(20) VALUE '---   ------   -----'.
-               10  FILLER    PIC X(10) VALUE '--        '.
+               10  FILLER    PIC X(20) VALUE '-----  -------     -'.
+               10  FILLER    PIC X(20) VALUE '-----    ------  ---'.
+               10  FILLER    PIC X(10) VALUE '----      '.
       *---------------------------------------------------------------*
        01  WS-HOLD-FIELDS.
       *---------------------------------------------------------------*
@@ -100,6 +100,7 @@
                    15  WS-UHR-YEAR       PIC X(04).
                    15  WS-UHR-MONTH      PIC X(02).
                    15  WS-UHR-DAY        PIC X(02).
+               10  WS-UHR-STATE          PIC X(02).
                10  WS-UHR-CASE-POSITIVE  PIC 9(07).
                10  WS-UHR-CASE-NEGATIVE  PIC 9(07).
                10  WS-UHR-CASE-PENDING   PIC 9(07).
@@ -113,7 +114,8 @@
                10  WS-UHR-RECOVERED      PIC 9(07).
                10  WS-UHR-DEATH          PIC 9(07).
                10  WS-UHR-DEATH-NEW      PIC 9(07).
-               10  WS-UHR-PERCENT        PIC 99V99.
+               10  WS-UHR-D-PERCENT      PIC 99V99.
+               10  WS-UHR-C-PERCENT      PIC 99V99.
       *---------------------------------------------------------------*
            05  WS-PERCENT             PIC 99V999999.
            05  TOTAL-ACCUMULATORS.
@@ -198,6 +200,7 @@
            IF VALID-RECORD
                UNSTRING USA-HIST-RECORD DELIMITED BY ','
                INTO  WS-UHR-DATE
+                     WS-UHR-STATE
                      WS-UHR-CASE-POSITIVE
                      WS-UHR-CASE-NEGATIVE
                      WS-UHR-CASE-PENDING
@@ -211,7 +214,8 @@
                      WS-UHR-RECOVERED
                      WS-UHR-DEATH
                      WS-UHR-DEATH-NEW
-                     WS-UHR-PERCENT.
+                     WS-UHR-D-PERCENT
+                     WS-UHR-C-PERCENT.
       *---------------------------------------------------------------*
        9000-PRINT-REPORT-LINE.
       *---------------------------------------------------------------*
