@@ -200,8 +200,8 @@
                REPLACING ALL ',' BY ' '
                AFTER QUOTE BEFORE '#'.
            INSPECT HACKER-NEWS-RECORD
-               REPLACING ALL '"' BY ''
-                         All '#' BY ''.
+               REPLACING ALL '"' BY ' '
+                         All '#' BY ' '.
            UNSTRING HACKER-NEWS-RECORD DELIMITED BY ','
                 INTO HNR-KEY
                      HNR-TITLE
