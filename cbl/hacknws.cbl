@@ -30,7 +30,7 @@
        01  SORT-RECORD.
            05  SR-KEY                      PIC X(08).
            05  SR-TITLE                    PIC X(86).
-           05  SR-NUM-POINTS               PIC 9(04).
+           05  SR-VOTES                    PIC 9(04).
            05  SR-NUM-COMMENTS             PIC 9(04).
            05  SR-AUTHOR                   PIC X(15).
            05  SR-CREATED-TIME             PIC 99.99.
@@ -142,33 +142,33 @@
                TALLYING COUNTER-1 FOR ALL 'COBOL'.
            INSPECT FUNCTION UPPER-CASE(HNR-TITLE)
                TALLYING COUNTER-2 FOR ALL 'MAINFRAME'.
-           IF COUNTER-1  > ZERO OR
-              COUNTER-2  > ZERO
-              UNSTRING HNR-CREATED-DATE DELIMITED BY SPACE
-                  INTO HNR-DATE
-                       HNR-TIME
-              INSPECT  HNR-TIME REPLACING ALL ' ' BY '0'
-              UNSTRING HNR-TIME         DELIMITED BY ':'
-                  INTO HNR-TIME-HH
-                       HNR-TIME-MM
-              PERFORM 2100-CALCULATE-RANKING
-              MOVE HNR-KEY            TO DL-KEY
-                                         SR-KEY
-              MOVE HNR-TITLE          TO DL-TITLE
-                                         SR-TITLE
-              MOVE HNR-AUTHOR         TO SR-AUTHOR
-              MOVE WS-HN-TIME         TO DL-CREATED-TIME
-                                         SR-CREATED-TIME
-              MOVE HNR-VOTES          TO DL-VOTES
-                                         SR-NUM-POINTS
-              MOVE HNR-COMMENTS       TO SR-NUM-COMMENTS
-              MOVE DL-RANKING         TO SR-RANKING
-              MOVE HNR-TIME-HH        TO DL-HN-HH
-              MOVE HNR-TIME-MM        TO DL-HN-MM
-              MOVE SPACE              TO SR-FILLER
-              PERFORM 9200-WRITE-SORT-RECORD
-              MOVE DETAIL-LINE  TO NEXT-REPORT-LINE
-              PERFORM 9000-PRINT-REPORT-LINE.
+           IF  COUNTER-1  > ZERO OR
+               COUNTER-2  > ZERO
+               UNSTRING HNR-CREATED-DATE DELIMITED BY SPACE
+                   INTO HNR-DATE
+                        HNR-TIME
+               INSPECT  HNR-TIME REPLACING ALL ' ' BY '0'
+               UNSTRING HNR-TIME         DELIMITED BY ':'
+                   INTO HNR-TIME-HH
+                        HNR-TIME-MM
+               PERFORM 2100-CALCULATE-RANKING
+               MOVE HNR-KEY            TO SR-KEY
+                                          DL-KEY
+               MOVE HNR-TITLE          TO SR-TITLE
+                                          DL-TITLE
+               MOVE HNR-AUTHOR         TO SR-AUTHOR
+               MOVE WS-HN-TIME         TO SR-CREATED-TIME
+                                          DL-CREATED-TIME
+               MOVE HNR-VOTES          TO SR-VOTES
+                                          DL-VOTES
+               MOVE HNR-COMMENTS       TO SR-NUM-COMMENTS
+               MOVE DL-RANKING         TO SR-RANKING
+               MOVE HNR-TIME-HH        TO DL-HN-HH
+               MOVE HNR-TIME-MM        TO DL-HN-MM
+               MOVE SPACE              TO SR-FILLER
+               PERFORM 9200-WRITE-SORT-RECORD
+               MOVE DETAIL-LINE        TO NEXT-REPORT-LINE
+               PERFORM 9000-PRINT-REPORT-LINE.
            PERFORM 8000-READ-HACKER-NEWS-FILE.
       *---------------------------------------------------------------*
        2100-CALCULATE-RANKING.
@@ -189,14 +189,21 @@
                AT END MOVE 'Y' TO END-OF-FILE-SW
                       MOVE 'N' TO VALID-RECORD-SW.
            IF  VALID-RECORD
-               INSPECT HACKER-NEWS-RECORD
-                   REPLACING ALL '"' BY '#'
-                   AFTER INITIAL '"'
-               INSPECT HACKER-NEWS-RECORD
-                   REPLACING ALL ',' BY ' '
-                   AFTER QUOTE BEFORE '#'
-               UNSTRING HACKER-NEWS-RECORD DELIMITED BY ','
-               INTO  HNR-KEY
+               PERFORM 8100-BREAKOUT-HACKER-RECORD.
+      *---------------------------------------------------------------*
+       8100-BREAKOUT-HACKER-RECORD.
+      *---------------------------------------------------------------*
+           INSPECT HACKER-NEWS-RECORD
+               REPLACING ALL '"' BY '#'
+               AFTER INITIAL '"'.
+           INSPECT HACKER-NEWS-RECORD
+               REPLACING ALL ',' BY ' '
+               AFTER QUOTE BEFORE '#'.
+           INSPECT HACKER-NEWS-RECORD
+               REPLACING ALL '"' BY ''
+                         All '#' BY ''.
+           UNSTRING HACKER-NEWS-RECORD DELIMITED BY ','
+                INTO HNR-KEY
                      HNR-TITLE
                      HNR-VOTES
                      HNR-COMMENTS
