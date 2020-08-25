@@ -115,6 +115,22 @@
       *----------------------------------------------------------*
        01  TRAILER-LINES.
       *----------------------------------------------------------*
+           05  TRAILER-1.
+               10  FILLER         PIC X(31) VALUE SPACES.
+               10  FILLER         PIC X(14) VALUE '--------------'.
+               10  FILLER         PIC X(01) VALUE SPACES.
+               10  FILLER         PIC X(14) VALUE '--------------'.
+               10  FILLER         PIC X(40) VALUE SPACES.
+      *----------------------------------------------------------*
+           05  TRAILER-2.
+               10  FILLER         PIC X(22) VALUE SPACES.
+               10  FILLER         PIC X(08) VALUE 'Totals ='.
+               10  FILLER         PIC X(01) VALUE SPACES.
+               10  TLIMIT-O       PIC $$$,$$$,$$9.99.
+               10  FILLER         PIC X(01) VALUE SPACES.
+               10  TBALANCE-O     PIC $$$,$$$,$$9.99.
+               10  FILLER         PIC X(40) VALUE SPACES.
+      *----------------------------------------------------------*
            05  STATE-TRAILER-1.
                10  FILLER  PIC X(20) VALUE '         Listing of '.
                10  FILLER  PIC X(20) VALUE 'States and Count of '.
@@ -167,15 +183,15 @@
        01  WS-SWITCHES-SUBSCRIPTS.
            05  END-OF-FILE-SW              PIC X VALUE 'N'.
                88  END-OF-FILE                   VALUE 'Y'.
-           05  VIRGINIA-COUNT              PIC 999 VALUE 0.
            05  OVERLIMIT-COUNT             PIC 999 VALUE 0.
-           05  INDEX-1                     PIC 99  VALUE 1.
-           05  SUB1                        PIC 999 VALUE 1.
-           05  DISP-SUB1                   PIC 999 VALUE 0.
+           05  INDEX-1                     PIC 999 VALUE 1.
            05  NO-OVERLIMIT-STATUS         PIC X(32) VALUE
                '  ***  NO ACCTS OVERLIMIT  ***  '.
            05  YES-OVERLIMIT-STATUS        PIC X(32) VALUE
                '   ***  ACCTS OVERLIMIT   ***   '.
+           05 TLIMIT                       PIC S9(9)V99 COMP-3 VALUE 0.
+           05 TBALANCE                     PIC S9(9)V99 COMP-3 VALUE 0.
+
            05  STATE-COUNT-TABLE   OCCURS 45 TIMES
                    INDEXED BY STATE-INDEX.
                10  STATE-NAME              PIC X(15) VALUE SPACE .
@@ -214,13 +230,15 @@
            MOVE ACCT-LIMIT       TO WS-ACCT-LIMIT-O.
            MOVE ACCT-BALANCE     TO WS-ACCT-BALANCE-O.
            MOVE LAST-NAME        TO WS-LAST-NAME-O.
+           COMPUTE TLIMIT   = TLIMIT   + ACCT-LIMIT.
+           COMPUTE TBALANCE = TBALANCE + ACCT-BALANCE.
            IF ACCT-LIMIT < ACCT-BALANCE THEN
-               MOVE ACCT-NO      TO OL-ACCT-NO(SUB1)
-               MOVE ACCT-LIMIT   TO OL-ACCT-LIMIT(SUB1)
-               MOVE ACCT-BALANCE TO OL-ACCT-BALANCE(SUB1)
-               MOVE LAST-NAME    TO OL-LASTNAME(SUB1)
-               MOVE FIRST-NAME   TO OL-FIRSTNAME(SUB1)
-               ADD 1 TO SUB1
+               MOVE ACCT-NO      TO OL-ACCT-NO(INDEX-1)
+               MOVE ACCT-LIMIT   TO OL-ACCT-LIMIT(INDEX-1)
+               MOVE ACCT-BALANCE TO OL-ACCT-BALANCE(INDEX-1)
+               MOVE LAST-NAME    TO OL-LASTNAME(INDEX-1)
+               MOVE FIRST-NAME   TO OL-FIRSTNAME(INDEX-1)
+               ADD 1 TO INDEX-1
                ADD 1 TO OVERLIMIT-COUNT.
            PERFORM 2100-ACCUMULATE-STATE-TOTALS.
            MOVE WS-PRINT-RECORD  TO NEXT-REPORT-LINE.
@@ -241,6 +259,12 @@
       *----------------------------------------------------------*
        3000-PRINT-TRAILER-LINES.
       *----------------------------------------------------------*
+           MOVE TLIMIT   TO TLIMIT-O.
+           MOVE TBALANCE TO TBALANCE-O.
+           MOVE TRAILER-1                  TO NEXT-REPORT-LINE.
+           PERFORM 9000-PRINT-REPORT-LINE.
+           MOVE TRAILER-2                  TO NEXT-REPORT-LINE.
+           PERFORM 9000-PRINT-REPORT-LINE.
            MOVE 1                          TO LINE-COUNT.
            MOVE STATE-TRAILER-1            TO PRINT-LINE.
            PERFORM 9110-WRITE-TOP-OF-PAGE.
@@ -270,8 +294,8 @@
                PERFORM 9000-PRINT-REPORT-LINE
                MOVE 2                      TO LINE-SPACEING
                PERFORM 3200-PRINT-OVERLIMIT-DETAIL
-                   VARYING SUB1 FROM 1 BY 1
-                   UNTIL SUB1 > OVERLIMIT-COUNT.
+                   VARYING INDEX-1 FROM 1 BY 1
+                   UNTIL INDEX-1 > OVERLIMIT-COUNT.
       *----------------------------------------------------------*
        3100-PRINT-STATE-TOTALS.
       *----------------------------------------------------------*
@@ -282,12 +306,12 @@
       *----------------------------------------------------------*
        3200-PRINT-OVERLIMIT-DETAIL.
       *----------------------------------------------------------*
-           SUBTRACT OL-ACCT-LIMIT(SUB1)
-               FROM OL-ACCT-BALANCE(SUB1)
+           SUBTRACT OL-ACCT-LIMIT(INDEX-1)
+               FROM OL-ACCT-BALANCE(INDEX-1)
                GIVING OD-OVER-AMT.
-           MOVE OL-ACCT-NO(SUB1)       TO OD-ACCT-NUM.
-           MOVE OL-LASTNAME(SUB1)      TO OD-LAST-NAME.
-           MOVE OL-FIRSTNAME(SUB1)     TO OD-FIRST-NAME.
+           MOVE OL-ACCT-NO(INDEX-1)       TO OD-ACCT-NUM.
+           MOVE OL-LASTNAME(INDEX-1)      TO OD-LAST-NAME.
+           MOVE OL-FIRSTNAME(INDEX-1)     TO OD-FIRST-NAME.
            MOVE OVERLIMIT-DETAIL       TO NEXT-REPORT-LINE.
            PERFORM 9000-PRINT-REPORT-LINE.
       *----------------------------------------------------------*
