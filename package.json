@@ -1,0 +1,23 @@
+{
+  "name": "challengestuff",
+  "version": "1.0.0",
+  "description": "Cobol Challenge Stuff",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-env": "node -e 'console.log(process.env)' | grep npm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edack/ChallengeStuff.git"
+  },
+  "keywords": [
+    "cobol"
+  ],
+  "author": "Ed Ackerman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edack/ChallengeStuff/issues"
+  },
+  "homepage": "https://github.com/edack/ChallengeStuff#readme"
+}
