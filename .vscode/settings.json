@@ -1,0 +1,10 @@
+{
+    "zopeneditor.datasets.cobolDatasets": [
+        ".COBOL",
+        ".COB",
+        ".COBCOPY",
+        ".COPYBOOK",
+        ".COPY",
+        ".CBL"
+    ]
+}

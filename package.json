@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check-env": "node -e 'console.log(process.env)' | grep npm"
+    "check-env": "node -e 'console.log(process.env)' | grep npm",
+    "clg": "zowe jobs submit ds 'z80843.cbl(cblgrph)' -d ."
   },
   "repository": {
     "type": "git",
