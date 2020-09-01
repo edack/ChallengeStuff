@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/edack/ChallengeStuff/issues"
   },
-  "homepage": "https://github.com/edack/ChallengeStuff#readme"
+  "homepage": "https://github.com/edack/ChallengeStuff#readme",
+  "dependencies": {
+    "package.json": "^2.0.1"
+  }
 }
