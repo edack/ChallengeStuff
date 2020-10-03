@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //HACKWS  JOB Z80843,'HACKER NEWS',MSGCLASS=A,CLASS=A,
 // MSGLEVEL=(1,1),REGION=0M,SYSAFF=ANY
 //************************************************************/
@@ -47,7 +46,6 @@
             118,5,X,
             126,9)
 /*
-=======
 //HACKWS  JOB Z80843,'HACKER NEWS',MSGCLASS=A,CLASS=A,
 // MSGLEVEL=(1,1),REGION=0M,SYSAFF=ANY
 //************************************************************/
@@ -96,4 +94,3 @@
             118,5,X,
             126,9)
 /*
->>>>>>> 9f6c7f3505a715f6d46f435db6eec5f7e436ffa2
