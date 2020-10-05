@@ -6,5 +6,6 @@
         ".COPYBOOK",
         ".COPY",
         ".CBL"
-    ]
+    ],
+    "mainframeTools.hclBackendExecDataSetName": "Z00070.REXX"
 }
