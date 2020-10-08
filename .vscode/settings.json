@@ -7,5 +7,6 @@
         ".COPY",
         ".CBL"
     ],
-    "mainframeTools.hclBackendExecDataSetName": "Z00070.REXX"
+    "mainframeTools.hclBackendExecDataSetName": "Z00070.REXX",
+    "python.pythonPath": "C:\\Python38\\python.exe"
 }
